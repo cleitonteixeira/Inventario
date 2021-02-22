@@ -71,4 +71,18 @@ class UsuarioDao{
         //AGORA RETORNO O VALOR FINAL ENCRIPTADO
         return $codifica; 
     }
+    
+    public function readList() {
+        
+        $sql = 'SELECT idusuarios, Nome FROM usuarios WHERE Ativo = 0';
+        
+        $stm = \Model\Conexao\Conexao::getConexao()->prepare($sql);
+        $stm->execute();
+        
+        while($row = $stm->fetch(\PDO::FETCH_OBJ)){
+            $select .= '<option data-token="'.utf8_decode($row->Nome).'" value="'.$row->idusuarios.'">'.$row->idusuarios.'-'.utf8_decode($row->Nome).'</option>';
+        }
+        
+        return $select;
+    }
 }

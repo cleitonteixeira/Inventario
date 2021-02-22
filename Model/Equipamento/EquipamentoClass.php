@@ -1,5 +1,5 @@
 <?php
-namespace View\Equipamento;
+namespace Model\Equipamento;
 
 class EquipamentoClass {
     

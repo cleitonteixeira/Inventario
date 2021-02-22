@@ -1,18 +1,57 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace Model\Unidade;
 
-/**
- * Description of UnidadeClass
- *
- * @author Mineiro
- */
 class UnidadeClass {
-    //put your code here
+    private $idUnidade, $idUsuario, $Usuario, $idRegiao, $Regiao, $Nome;
+    
+    function getIdUnidade() {
+        return $this->idUnidade;
+    }
+
+    function getIdUsuario() {
+        return $this->idUsuario;
+    }
+
+    function getUsuario() {
+        return $this->Usuario;
+    }
+
+    function getIdRegiao() {
+        return $this->idRegiao;
+    }
+
+    function getRegiao() {
+        return $this->Regiao;
+    }
+
+    function getNome() {
+        return $this->Nome;
+    }
+
+    function setIdUnidade($idUnidade): void {
+        $this->idUnidade = $idUnidade;
+    }
+
+    function setIdUsuario($idUsuario): void {
+        $this->idUsuario = $idUsuario;
+    }
+
+    function setUsuario($Usuario): void {
+        $this->Usuario = $Usuario;
+    }
+
+    function setIdRegiao($idRegiao): void {
+        $this->idRegiao = $idRegiao;
+    }
+
+    function setRegiao($Regiao): void {
+        $this->Regiao = $Regiao;
+    }
+
+    function setNome($Nome): void {
+        $this->Nome = $Nome;
+    }
+
+
 }

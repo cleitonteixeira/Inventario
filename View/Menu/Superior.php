@@ -14,7 +14,7 @@ define("BASE", filter_input(INPUT_SERVER, 'REQUEST_SCHEME').'://'.filter_input(I
         <link rel="stylesheet" href="<?=BASE;?>node_modules/bootstrap/compiler/bootstrap.css" />
         <link rel="stylesheet" href="<?=BASE;?>node_modules/bootstrap/compiler/style.css" />        
         <link rel="stylesheet" href="<?=BASE;?>node_modules/bootstrap-select/dist/css/bootstrap-select.min.css" />
-
+        <link rel="stylesheet" href="<?=BASE;?>node_modules/bootstrap-icons/font/bootstrap-icons.css" />
         <link rel="stylesheet" href="<?=BASE;?>codes/css/bootstrap-datepicker.min.css" />
 
         <title>Intranet Nutribem</title>
@@ -36,7 +36,7 @@ define("BASE", filter_input(INPUT_SERVER, 'REQUEST_SCHEME').'://'.filter_input(I
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="NavLancamento" href="#">Equipamento</a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="<?=BASE;?>View/Lancamento/Diario.php">Listar</a>
+                                <a class="dropdown-item" href="<?=BASE;?>View/Equipamento/Listar.php">Listar</a>
                                 <a class="dropdown-item">Solicitação</a>
                             </div>
                         </li>
@@ -44,9 +44,6 @@ define("BASE", filter_input(INPUT_SERVER, 'REQUEST_SCHEME').'://'.filter_input(I
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="NavLancamento" href="#">Relatório</a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item">Solicitação</a>
-
-                                <!--<a class="dropdown-item">Fornecimento</a>-->
-                                <!--<a class="dropdown-item">Consumo Cliente/Dia</a>-->
                             </div>
                         </li>
                     </ul>
@@ -69,11 +66,12 @@ define("BASE", filter_input(INPUT_SERVER, 'REQUEST_SCHEME').'://'.filter_input(I
                             </div>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="NavLancamento" href="#">Administração</a>
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="NavLancamento" href="#">Cadastro</a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Equipamento</a>
-                                <a class="dropdown-item" href="#">Categoria</a>
-                                <a class="dropdown-item" href="#">Unidade</a>
+                                <a class="dropdown-item" href="<?=BASE;?>View/Equipamento/Cadastro.php">Equipamento</a>
+                                <a class="dropdown-item" href="<?=BASE;?>View/Categoria/Cadastro.php">Categoria</a>
+                                <a class="dropdown-item" href="<?=BASE;?>View/Unidade/Cadastro.php">Unidade</a>
+                                <a class="dropdown-item" href="<?=BASE;?>View/Regiao/Cadastro.php">Região</a>
                             </div>
                         </li>
                     </ul>
