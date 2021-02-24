@@ -58,10 +58,11 @@
                         $('#mUnidade').val(obj.Unidade+' - '+obj.Regiao);
                         $('#dEquipamento').val(obj.idEquipamento);
                         $('#sEquipamento').val(obj.idEquipamento);
-                    })
+                    });
                 });
                 $('#modalEquipamento').modal('show');
             }
+            
             $(document).ready(function(){
               $("#sCodigo").on("keyup", function() {
                 var value = $(this).val().toLowerCase();
@@ -115,6 +116,21 @@
                     }
                 });
              });
+        </script>
+        <?php }
+        if(filter_input(INPUT_SERVER, 'SCRIPT_NAME') == '/Inventario/View/Equipamento/Solicitacao.php'){
+        ?>
+        <script>
+            function solicitacaoEquipamento(idEquipamento, Tipo){
+                var idUnidade = $("#UnidadeDestino").val();
+                var dados = {idEquipamento: idEquipamento, idUnidade: idUnidade, Tipo: Tipo};
+                alert(dados);
+                //$.post('<?=BASE;?>Controle/Equipamentos.php', dados , function(dados){
+                  //  $.each(JSON.parse(dados), function(i, obj){
+                        
+                    //});
+                //});
+            }
         </script>
         <?php } ?>
   </body>

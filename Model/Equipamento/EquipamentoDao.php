@@ -75,7 +75,7 @@ class EquipamentoDao {
     
     public function readTableEquipamento( $pagina,$qnt_result_pg) {
         $inicio = ($pagina * $qnt_result_pg) - $qnt_result_pg;
-        $sql = "SELECT e.idEquipamento, e.Nome AS Equipamento, u.Nome AS Unidade, c.Nome AS Categoria, e.Descricao, e.Sequencial, r.Nome AS Regiao, r.Codigo, e.Situacao FROM equipamento e INNER JOIN categoria c ON c.idCategoria = e.Categoria_idCategoria INNER JOIN unidade u ON u.idUnidade = e.Unidade_idUnidade INNER JOIN regiao r ON r.idRegiao = u.Regiao_idRegiao WHERE e.Unidade_idUnidade IN (SELECT Unidade_idUnidade FROM unidadeiuser WHERE Usuario_idUsuario = ?) LIMIT ?, ?";
+        $sql = "SELECT e.idEquipamento, e.Nome AS Equipamento, u.Nome AS Unidade,u.Codigo AS CodUnidade, c.Nome AS Categoria, e.Descricao, e.Sequencial, r.Nome AS Regiao, r.Codigo, e.Situacao FROM equipamento e INNER JOIN categoria c ON c.idCategoria = e.Categoria_idCategoria INNER JOIN unidade u ON u.idUnidade = e.Unidade_idUnidade INNER JOIN regiao r ON r.idRegiao = u.Regiao_idRegiao WHERE e.Unidade_idUnidade IN (SELECT Unidade_idUnidade FROM unidadeiuser WHERE Usuario_idUsuario = ?) LIMIT ?, ?";
         $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
         $stmt->bindParam(1, $_SESSION['idUser']);
         $stmt->bindParam(2, $inicio, \PDO::PARAM_INT);
@@ -83,7 +83,7 @@ class EquipamentoDao {
         $stmt->execute();
         $TableClientes = '<table class="table table-hover table-bordered"><thead class="thead-light"><tr><th scope="col">Código</th><th scope="col">Equipamento</th><th scope="col">Unidade</th><th scope="col">Situação</th><th scope="col">Info</th></tr></thead><tbody>';
         while($res = $stmt->fetch(\PDO::FETCH_OBJ)){
-            $TableClientes .= "<tr class='font-equipamento'><td >".$res->Codigo.".".$res->Sequencial."</td><td >".utf8_decode($res->Equipamento)."</td><td >".utf8_decode($res->Unidade)."</td><td >".utf8_decode($res->Situacao)."</td><td><button class='btn btn-sm btn-outline-info' onclick='buscaEquipamento(".$res->idEquipamento.")'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-folder2-open' viewBox='0 0 16 16'><path d='M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v.64c.57.265.94.876.856 1.546l-.64 5.124A2.5 2.5 0 0 1 12.733 15H3.266a2.5 2.5 0 0 1-2.481-2.19l-.64-5.124A1.5 1.5 0 0 1 1 6.14V3.5zM2 6h12v-.5a.5.5 0 0 0-.5-.5H9c-.964 0-1.71-.629-2.174-1.154C6.374 3.334 5.82 3 5.264 3H2.5a.5.5 0 0 0-.5.5V6zm-.367 1a.5.5 0 0 0-.496.562l.64 5.124A1.5 1.5 0 0 0 3.266 14h9.468a1.5 1.5 0 0 0 1.489-1.314l.64-5.124A.5.5 0 0 0 14.367 7H1.633z'></path></svg></button></td></tr>";
+            $TableClientes .= "<tr class='font-equipamento'><td >".$res->Codigo.".".$res->CodUnidade.".".$res->Sequencial."</td><td >".utf8_decode($res->Equipamento)."</td><td >".utf8_decode($res->Unidade)."</td><td >".utf8_decode($res->Situacao)."</td><td><button class='btn btn-sm btn-outline-info' onclick='buscaEquipamento(".$res->idEquipamento.")'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-folder2-open' viewBox='0 0 16 16'><path d='M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v.64c.57.265.94.876.856 1.546l-.64 5.124A2.5 2.5 0 0 1 12.733 15H3.266a2.5 2.5 0 0 1-2.481-2.19l-.64-5.124A1.5 1.5 0 0 1 1 6.14V3.5zM2 6h12v-.5a.5.5 0 0 0-.5-.5H9c-.964 0-1.71-.629-2.174-1.154C6.374 3.334 5.82 3 5.264 3H2.5a.5.5 0 0 0-.5.5V6zm-.367 1a.5.5 0 0 0-.496.562l.64 5.124A1.5 1.5 0 0 0 3.266 14h9.468a1.5 1.5 0 0 0 1.489-1.314l.64-5.124A.5.5 0 0 0 14.367 7H1.633z'></path></svg></button></td></tr>";
         }
         $TableClientes .= '</tbody></table>';
 	$sqlQ = "SELECT COUNT(idContrato) AS num_result FROM contrato WHERE Finalizado = 'N'";
@@ -130,7 +130,6 @@ class EquipamentoDao {
         array_push($Dados, $Valores);
         return $Dados;
     }
-    
     
     
     

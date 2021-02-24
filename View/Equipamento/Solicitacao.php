@@ -34,7 +34,7 @@ if(!isset($_SESSION['idUser'])){
                             <h4 class="card-title mb-2">Formulário de <?=$nTipo?> de Equipamento</h4>
                         </div>
                         <div class="card-body">
-                            <form class="my-2" action="Salvar.php" enctype="multipart/form-data" method="post" data-toggle="validator">
+                            <form class="my-2" enctype="multipart/form-data" method="post" data-toggle="validator">
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group mb-2">
@@ -96,8 +96,8 @@ if(!isset($_SESSION['idUser'])){
                                     </div>
                                     <div class="col">
                                         <div class="form-group mb-2 mt-4">
-                                            <input type="hidden" value="<?=$E[0]['idEquipamento']?>" name="idEquipamento" id="idEquipamento" />
-                                            <button type="submit" class="btn btn-lg btn-outline-success btn-block">
+                                            <input type="hidden" value="<?=$Tipo?>" name="Tipo" id="Tipo" />
+                                            <button type="button" onclick="solicitacaoEquipamento(<?=$E[0]['idEquipamento']?>,)" class="btn btn-lg btn-outline-success btn-block">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">   <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"></path></svg>
                                                 Enviar Solicitação
                                             </button>
