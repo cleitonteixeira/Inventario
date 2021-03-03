@@ -130,7 +130,4 @@ class EquipamentoDao {
         array_push($Dados, $Valores);
         return $Dados;
     }
-    
-    
-    
 }

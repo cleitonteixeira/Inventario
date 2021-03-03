@@ -97,7 +97,7 @@ if(!isset($_SESSION['idUser'])){
                                     <div class="col">
                                         <div class="form-group mb-2 mt-4">
                                             <input type="hidden" value="<?=$Tipo?>" name="Tipo" id="Tipo" />
-                                            <button type="button" onclick="solicitacaoEquipamento(<?=$E[0]['idEquipamento']?>,)" class="btn btn-lg btn-outline-success btn-block">
+                                            <button type="button" onclick="solicitacaoEquipamento(<?=$E[0]['idEquipamento']?>, '<?=$nTipo?>')" class="btn btn-lg btn-outline-success btn-block">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">   <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"></path></svg>
                                                 Enviar Solicitação
                                             </button>
@@ -110,7 +110,44 @@ if(!isset($_SESSION['idUser'])){
                 </div>
             </div>
         </div>
-
+        <!-- Modal -->
+        <div class="modal fade" id="modalErroSelect" tabindex="-1" aria-labelledby="modalErroSelectLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalErroSelectLabel">Erro Requisição</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Selecione uma unidade antes de enviar a requisição!</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="modalSolicitacao" tabindex="-1" aria-labelledby="modalSolicitacaoLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalSolicitacaoLabel">Status Solicitação</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <span id="returnSolicita"></span>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 <?php
     require_once '../../View/Menu/Inferior.php';

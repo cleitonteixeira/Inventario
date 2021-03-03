@@ -3,9 +3,16 @@ namespace Model\Equipamento;
 
 class EquipamentoClass {
     
-    private $idEquipamento, $idUnidade, $idCategoria, $idUser, $Unidade, $Usuario, $Nome, $Descricao, $Sequencial, $Ativo;
-    
-    function getIdEquipamento() {
+    private $idEquipamento, $idUnidade, $idCategoria, $idUser, $Unidade, $Usuario, $Nome, $Descricao, $Sequencial, $Ativo, $Situacao;
+    function getSituacao() {
+        return $this->Situacao;
+    }
+
+    function setSituacao($Situacao): void {
+        $this->Situacao = $Situacao;
+    }
+
+        function getIdEquipamento() {
         return $this->idEquipamento;
     }
 

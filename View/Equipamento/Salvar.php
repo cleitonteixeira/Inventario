@@ -71,6 +71,11 @@ if(!isset($_SESSION['idUser'])){
         </script>
 <?php
         }
+    }elseif( filter_input(INPUT_POST, 'Equipamento') == 'Solicitacao' ){
+        echo "Solcicitcao";
+?>
+    
+<?php
     }
     require_once '../../View/Menu/Inferior.php';
 }

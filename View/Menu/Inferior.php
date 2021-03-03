@@ -123,13 +123,29 @@
         <script>
             function solicitacaoEquipamento(idEquipamento, Tipo){
                 var idUnidade = $("#UnidadeDestino").val();
-                var dados = {idEquipamento: idEquipamento, idUnidade: idUnidade, Tipo: Tipo};
-                alert(dados);
-                //$.post('<?=BASE;?>Controle/Equipamentos.php', dados , function(dados){
-                  //  $.each(JSON.parse(dados), function(i, obj){
-                        
-                    //});
-                //});
+                if(idUnidade > 0){
+                    var dados = {idEquipamento: idEquipamento, idUnidade: idUnidade, Tipo: Tipo, Solicitacao: 'Solicitacao', Equipamento: 'Solicitacao'};
+                    //alert(dados);
+                    $.post('<?=BASE;?>Controle/Solicitacao.php', dados , function(dados){
+                        $.each(JSON.parse(dados), function(i, obj){
+                            if(obj.Retorno){
+                                $('#returnSolicita').html("Solicitação Efetuada com Sucesso!").show();
+                            }else{
+                                $('#returnSolicita').html("Falha ao gravar solicitação, favor entrar em contato com o Cleiton Teixeira!").show();
+                            }
+                             $("#modalSolicitacao").modal('show');
+                                setTimeout(function() {
+                                    $('#modalSolicitacao').modal('hide');
+                            }, 5000);
+                            
+                        });
+                    });
+                }else{
+                    $("#modalErroSelect").modal('show');
+                        setTimeout(function() {
+                            $('#modalErroSelect').modal('hide');
+                    }, 3000);
+                }
             }
         </script>
         <?php } ?>

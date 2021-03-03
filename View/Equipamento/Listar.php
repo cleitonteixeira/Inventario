@@ -19,7 +19,7 @@ if(!isset($_SESSION['idUser'])){
                 <div class="col-9">
                     <div class="card">
                         <div class="card-header card-header-inventario">
-                            <h4 class="card-title mb-2">Lista Equipamento</h4>
+                            <h4 class="card-title mb-0">Lista Equipamento</h4>
                         </div>
                         <div class="card-body">
                             <form class="mr-auto">
@@ -123,7 +123,6 @@ if(!isset($_SESSION['idUser'])){
                         </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                        
                     </div>
                 </div>
             </div>
