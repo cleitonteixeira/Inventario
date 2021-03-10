@@ -16,7 +16,7 @@ if(!isset($_SESSION['idUser'])){
         <div class="container">
             <!-- CONTEUDO SITE USUÁRIO -->
             <div class="row my-2">
-                <div class="col-9">
+                <div class="col-12">
                     <div class="card">
                         <div class="card-header card-header-inventario">
                             <h4 class="card-title mb-0">Lista Equipamento</h4>
@@ -34,18 +34,6 @@ if(!isset($_SESSION['idUser'])){
                             <span id="TableEquipamentos"></span>
                         </div>
                     </div>
-                </div>
-                <div class="col-3">
-                     <div class="card">
-                        <div class="card-header card-header-inventario">
-                            <h5 class="card-title mb-2">Código Região</h5>
-                        </div>
-                         <div class="card-body">
-                             <ul class="list-group list-group-flush font-regiao-list">
-                                <?=$Regiao->readListL()?>
-                            </ul>
-                         </div>
-                     </div>
                 </div>
             </div>
         </div>
@@ -66,13 +54,13 @@ if(!isset($_SESSION['idUser'])){
                                     <div class="col">
                                         <div class="form-group mb-2">
                                             <label for="mSequencial" class="col-form-label">Sequencial:</label>
-                                            <input type="text" readonly class="form-control" id="mSequencial" value="3.5.100001">
+                                            <input type="text" readonly class="form-control" id="mSequencial" value="Carregando...">
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-group mb-2">
                                             <label for="mEquipamento" class="col-form-label">Equipamento:</label>
-                                            <input type="text" readonly class="form-control" id="mEquipamento" value="3.5.100001">
+                                            <input type="text" readonly class="form-control" id="mEquipamento" value="Carregando...">
                                         </div>
                                     </div>
                                 </div>
@@ -80,13 +68,13 @@ if(!isset($_SESSION['idUser'])){
                                     <div class="col">
                                         <div class="form-group">
                                             <label for="mCategoria" class="col-form-label">Categoria:</label>
-                                            <input type="text" readonly class="form-control" id="mCategoria" value="3.5.100001">
+                                            <input type="text" readonly class="form-control" id="mCategoria" value="Carregando...">
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-group mb-2">
-                                            <label for="mSituacao" class="col-form-label">Situação:</label>
-                                            <input type="text" readonly class="form-control" id="mSituacao" value="3.5.100001">
+                                            <label for="mSituacao" class="col-form-label">Status:</label>
+                                            <input type="text" readonly class="form-control" id="mSituacao" value="Carregando...">
                                         </div>
                                     </div>
                                 </div>
@@ -102,22 +90,22 @@ if(!isset($_SESSION['idUser'])){
                                     <div class="col">
                                         <div class="form-group mb-2">
                                             <label for="mResponsavel" class="col-form-label">Responsável:</label>
-                                            <input type="text" readonly class="form-control" id="mResponsavel" value="3.5.100001">
+                                            <input type="text" readonly class="form-control" id="mResponsavel" value="Carregando...">
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-group mb-2">
                                             <label for="mUnidade" class="col-form-label">Unidade/Região:</label>
-                                            <input type="text" readonly class="form-control" id="mUnidade" value="3.5.100001">
+                                            <input type="text" readonly class="form-control" id="mUnidade" value="Carregando...">
                                         </div>
                                     </div>
                                 </div>
                             </form>
                             <div class="row my-2">
                                 
-                                <div class="col-md-6"><form action="Solicitacao.php" method="post"><input type="hidden" name="tSolicita" value="Devolucao"><input type="hidden" name="dEquipamento" id="dEquipamento" ><button type="submit" class="btn btn-outline-danger btn-block">Devolver</button></form></div>
+                                <div class="col-md-6"><form action="Solicitacao.php" method="post"><input type="hidden" name="tSolicita" value="Devolucao"><input type="hidden" name="dEquipamento" id="dEquipamento" ><button type="submit" id="btn-item-devolucao" class="btn btn-outline-danger btn-block">Devolver</button></form></div>
                                 
-                                <div class="col-md-6"><form action="Solicitacao.php" method="post"><input type="hidden" name="tSolicita" value="Solicitacao"><input type="hidden" name="sEquipamento" id="sEquipamento" ><button type="submit" class="btn btn-outline-success btn-block">Solicitar</button></form></div>
+                                <div class="col-md-6"><form action="Solicitacao.php" method="post"><input type="hidden" name="tSolicita" value="Solicitacao"><input type="hidden" name="sEquipamento" id="sEquipamento" ><button type="submit" id="btn-item-solicitacao" class="btn btn-outline-success btn-block">Solicitar</button></form></div>
                                 
                             </div>
                         </div>

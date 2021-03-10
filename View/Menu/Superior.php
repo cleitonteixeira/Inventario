@@ -37,7 +37,7 @@ define("BASE", filter_input(INPUT_SERVER, 'REQUEST_SCHEME').'://'.filter_input(I
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="NavLancamento" href="#">Equipamento</a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="<?=BASE;?>View/Equipamento/Listar.php">Listar</a>
-                                <a class="dropdown-item">Solicitação</a>
+                                <a class="dropdown-item" href="<?=BASE;?>View/Solicitacao/Todas.php">Solicitação</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -60,9 +60,9 @@ define("BASE", filter_input(INPUT_SERVER, 'REQUEST_SCHEME').'://'.filter_input(I
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="NavLancamento" href="#">Solicitações</a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item">Solicitadas</a>
-                                <a class="dropdown-item">Aprovadas</a>
-                                <a class="dropdown-item">Finalizadas</a>
+                                <a class="dropdown-item" href="<?=BASE;?>View/Solicitacao/Nova.php">Novas</a>
+                                <a class="dropdown-item" href="<?=BASE;?>View/Solicitacao/Andamento.php">Andamento</a>
+                                <a class="dropdown-item" href="<?=BASE;?>View/Solicitacao/Todas.php">Finalizadas</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">

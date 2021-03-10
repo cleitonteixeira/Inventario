@@ -35,7 +35,7 @@ if(!isset($_SESSION['idUser'])){
                                 <div class="form-group row">
                                     <label for="Usuario" class="col-sm-3 col-form-label">Responsável:</label>
                                     <div class="col-sm-9 ml-0">
-                                        <select required class="selectpicker form-control dropdown" name="Usuario" id="Usuario" title="Selecione uma Unidade" data-size="5" data-live-search="true" required >
+                                        <select required class="selectpicker form-control dropdown" name="Usuario" id="Usuario" title="Selecione um Usuário" data-size="5" data-live-search="true" required >
                                             <?=$Usuario->readList()?>
                                         </select>
                                         <div class="help-block with-errors"></div>
@@ -44,7 +44,7 @@ if(!isset($_SESSION['idUser'])){
                                 <div class="form-group row">
                                     <label for="Regiao" class="col-sm-3 col-form-label">Região:</label>
                                     <div class="col-sm-9 ml-0">
-                                        <select required class="selectpicker form-control dropdown" name="Regiao" id="Regiao" title="Selecione uma Categoria" data-size="5" data-live-search="true" required >
+                                        <select required class="selectpicker form-control dropdown" name="Regiao" id="Regiao" title="Selecione uma Região" data-size="5" data-live-search="true" required >
                                             <?=$Regiao->readList()?>
                                         </select>
                                         <div class="help-block with-errors"></div>

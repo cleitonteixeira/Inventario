@@ -81,32 +81,32 @@ class EquipamentoDao {
         $stmt->bindParam(2, $inicio, \PDO::PARAM_INT);
         $stmt->bindParam(3, $qnt_result_pg, \PDO::PARAM_INT); 
         $stmt->execute();
-        $TableClientes = '<table class="table table-hover table-bordered"><thead class="thead-light"><tr><th scope="col">Código</th><th scope="col">Equipamento</th><th scope="col">Unidade</th><th scope="col">Situação</th><th scope="col">Info</th></tr></thead><tbody>';
+        $TableEquipamentos = '<table class="table table-hover table-bordered"><thead class="thead-light"><tr><th scope="col">Código</th><th scope="col">Equipamento</th><th scope="col">Unidade</th><th scope="col">Status</th><th scope="col">Detalhes</th></tr></thead><tbody>';
         while($res = $stmt->fetch(\PDO::FETCH_OBJ)){
-            $TableClientes .= "<tr class='font-equipamento'><td >".$res->Codigo.".".$res->CodUnidade.".".$res->Sequencial."</td><td >".utf8_decode($res->Equipamento)."</td><td >".utf8_decode($res->Unidade)."</td><td >".utf8_decode($res->Situacao)."</td><td><button class='btn btn-sm btn-outline-info' onclick='buscaEquipamento(".$res->idEquipamento.")'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-folder2-open' viewBox='0 0 16 16'><path d='M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v.64c.57.265.94.876.856 1.546l-.64 5.124A2.5 2.5 0 0 1 12.733 15H3.266a2.5 2.5 0 0 1-2.481-2.19l-.64-5.124A1.5 1.5 0 0 1 1 6.14V3.5zM2 6h12v-.5a.5.5 0 0 0-.5-.5H9c-.964 0-1.71-.629-2.174-1.154C6.374 3.334 5.82 3 5.264 3H2.5a.5.5 0 0 0-.5.5V6zm-.367 1a.5.5 0 0 0-.496.562l.64 5.124A1.5 1.5 0 0 0 3.266 14h9.468a1.5 1.5 0 0 0 1.489-1.314l.64-5.124A.5.5 0 0 0 14.367 7H1.633z'></path></svg></button></td></tr>";
+            $TableEquipamentos .= "<tr class='font-equipamento'><td >".$res->Codigo.".".$res->CodUnidade.".".$res->Sequencial."</td><td >".utf8_decode($res->Equipamento)."</td><td >".utf8_decode($res->Unidade)."</td><td >".utf8_decode($res->Situacao)."</td><td><button class='btn btn-sm btn-outline-info' onclick='buscaEquipamento(".$res->idEquipamento.")'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-folder2-open' viewBox='0 0 16 16'><path d='M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v.64c.57.265.94.876.856 1.546l-.64 5.124A2.5 2.5 0 0 1 12.733 15H3.266a2.5 2.5 0 0 1-2.481-2.19l-.64-5.124A1.5 1.5 0 0 1 1 6.14V3.5zM2 6h12v-.5a.5.5 0 0 0-.5-.5H9c-.964 0-1.71-.629-2.174-1.154C6.374 3.334 5.82 3 5.264 3H2.5a.5.5 0 0 0-.5.5V6zm-.367 1a.5.5 0 0 0-.496.562l.64 5.124A1.5 1.5 0 0 0 3.266 14h9.468a1.5 1.5 0 0 0 1.489-1.314l.64-5.124A.5.5 0 0 0 14.367 7H1.633z'></path></svg></button></td></tr>";
         }
-        $TableClientes .= '</tbody></table>';
-	$sqlQ = "SELECT COUNT(idContrato) AS num_result FROM contrato WHERE Finalizado = 'N'";
+        $TableEquipamentos .= '</tbody></table>';
+	$sqlQ = "SELECT COUNT(idEquipamento) AS num_result FROM equipamento WHERE Ativo = 0;";
 	$stmtQ = \Model\Conexao\Conexao::getConexao()->prepare($sqlQ);
         $stmtQ->execute();
 	$row_pg = $stmtQ->fetch(\PDO::FETCH_ASSOC);
 	$quantidade_pg = ceil($row_pg['num_result'] / $qnt_result_pg);
 	$max_links = 2;
-	$TableClientes .= '<nav aria-label="paginacao"><ul class="pagination"><li class="page-item"><span class="page-link"><a href="#" onclick="ListarEquipamentos(1, '.$qnt_result_pg.')">Primeira</a> </span>';
-	$TableClientes .= '</li>';
+	$TableEquipamentos .= '<nav aria-label="paginacao"><ul class="pagination"><li class="page-item"><span class="page-link"><a href="#" onclick="ListarEquipamentos(1, '.$qnt_result_pg.')">Primeira</a> </span>';
+	$TableEquipamentos .= '</li>';
 	for ($pag_ant = $pagina - $max_links; $pag_ant <= $pagina - 1; $pag_ant++) {
 		if($pag_ant >= 1){
-			$TableClientes .= "<li class='page-item'><a class='page-link' href='#' onclick='ListarEquipamentos($pag_ant, $qnt_result_pg)'>$pag_ant </a></li>";
+			$TableEquipamentos .= "<li class='page-item'><a class='page-link' href='#' onclick='ListarEquipamentos($pag_ant, $qnt_result_pg)'>$pag_ant </a></li>";
 		}
 	}
-	$TableClientes .= '<li class="page-item active"><span class="page-link">'.$pagina.'</span></li>';
+	$TableEquipamentos .= '<li class="page-item active"><span class="page-link">'.$pagina.'</span></li>';
 	for ($pag_dep = $pagina + 1; $pag_dep <= $pagina + $max_links; $pag_dep++) {
 		if($pag_dep <= $quantidade_pg){
-			$TableClientes .= "<li class='page-item'><a class='page-link' href='#' onclick='ListarEquipamentos($pag_dep, $qnt_result_pg)'>$pag_dep</a></li>";
+			$TableEquipamentos .= "<li class='page-item'><a class='page-link' href='#' onclick='ListarEquipamentos($pag_dep, $qnt_result_pg)'>$pag_dep</a></li>";
 		}
 	}
-	$TableClientes .= '<li class="page-item"><span class="page-link"><a href="#" onclick="ListarEquipamentos('.$quantidade_pg.', '. $qnt_result_pg.')">Última</a></span></li></ul></nav>';
-        return $TableClientes;
+	$TableEquipamentos .= '<li class="page-item"><span class="page-link"><a href="#" onclick="ListarEquipamentos('.$quantidade_pg.', '. $qnt_result_pg.')">Última</a></span></li></ul></nav>';
+        return $TableEquipamentos;
     }
     public function readEDetalhes($idEquipamento) {
         $sql = "SELECT e.Nome AS Equipamento, e.idEquipamento, u.Nome AS Unidade, r.Nome AS Regiao, r.Codigo AS CodRegiao, e.Sequencial, u.Codigo AS CodUnidade, e.Descricao, us.Nome AS Responsavel, e.Situacao, ca.Nome AS Categoria FROM equipamento e INNER JOIN unidade u ON u.idUnidade = e.Unidade_idUnidade INNER JOIN regiao r ON r.idRegiao = u.Regiao_idRegiao INNER JOIN categoria ca ON ca.idCategoria = e.Categoria_idCategoria INNER JOIN usuarios us ON us.idusuarios = u.Usuario_idUsuario WHERE idEquipamento = ?";

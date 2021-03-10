@@ -5,8 +5,38 @@
         <script src="<?=BASE;?>codes/js/bootstrap-datepicker.min.js"></script>
         <script src="<?=BASE;?>codes/js/bootstrap-datepicker.pt-BR.min.js"></script>
         <script src="<?=BASE;?>codes/js/Validator.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#lDate').datepicker({
+                    format: 'yyyy-mm-dd',
+                    language: 'pt-BR',
+                    startDate: '+1d',
+                    todayBtn: "linked"
+                });
+            });
+        </script>
         
-        <?php if(filter_input(INPUT_SERVER, 'SCRIPT_NAME') == '/Gestor/index.php'){ ?>
+        <?php if(filter_input(INPUT_SERVER, 'SCRIPT_NAME') == '/Inventario/View/Solicitacao/Nova.php'){  ?>
+        <script>
+            var qnt_result_pg = 9; //quantidade de registro por página
+            var pagina = 1; //página inicial
+            $(document).ready(function () {
+                    listarSolicitacao(pagina, qnt_result_pg); //Chamar a função para listar os registros
+            });
+            function listarSolicitacao(pagina, qnt_result_pg){
+                var dados = {
+                        pagina: pagina,
+                        qnt_result_pg: qnt_result_pg,
+                        Solicitacao: 'Lista'
+
+                };
+                $.post('<?=BASE;?>Controle/Solicitacao.php', dados , function(retorna){
+                        //Subtitui o valor no seletor id="conteudo"
+                        $("#TableSolicitacao").html(retorna);
+                });
+            }
+        </script>
+        <?php  } if(filter_input(INPUT_SERVER, 'SCRIPT_NAME') == '/Gestor/index.php'){ ?>
         <script>
             var qnt_result_pg = 9; //quantidade de registro por página
             var pagina = 1; //página inicial
@@ -58,6 +88,18 @@
                         $('#mUnidade').val(obj.Unidade+' - '+obj.Regiao);
                         $('#dEquipamento').val(obj.idEquipamento);
                         $('#sEquipamento').val(obj.idEquipamento);
+                        if(obj.Situacao === 'Reservado'){
+                            $('#btn-item-solicitacao').attr('disabled','disabled');
+                            $('#btn-item-devolucao').attr('disabled','disabled');
+                        }
+                        if(obj.Situacao === 'Locado'){
+                            $('#btn-item-solicitacao').attr('disabled','disabled');
+                            $('#btn-item-devolucao').removeAttr('disabled','disabled');
+                        }
+                        if(obj.Situacao === 'Disponível'){
+                            $('#btn-item-solicitacao').removeAttr('disabled','disabled');
+                            $('#btn-item-devolucao').attr('disabled','disabled');
+                        }
                     });
                 });
                 $('#modalEquipamento').modal('show');
