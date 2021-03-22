@@ -7,21 +7,61 @@ namespace Composer\Autoload;
 class ComposerStaticInit612e8382731b0caf052f0e75db9dc421
 {
     public static $prefixLengthsPsr4 = array (
+        'S' => 
+        array (
+            'Svg\\' => 4,
+        ),
         'M' => 
         array (
             'Model\\' => 6,
         ),
+        'F' => 
+        array (
+            'FontLib\\' => 8,
+        ),
+        'D' => 
+        array (
+            'Dompdf\\' => 7,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'Svg\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg',
+        ),
         'Model\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Model',
+        ),
+        'FontLib\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phenx/php-font-lib/src/FontLib',
+        ),
+        'Dompdf\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dompdf/dompdf/src',
+        ),
+    );
+
+    public static $prefixesPsr0 = array (
+        'S' => 
+        array (
+            'Sabberworm\\CSS' => 
+            array (
+                0 => __DIR__ . '/..' . '/sabberworm/php-css-parser/lib',
+            ),
         ),
     );
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Dompdf\\Cpdf' => __DIR__ . '/..' . '/dompdf/dompdf/lib/Cpdf.php',
+        'HTML5_Data' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/Data.php',
+        'HTML5_InputStream' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/InputStream.php',
+        'HTML5_Parser' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/Parser.php',
+        'HTML5_Tokenizer' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/Tokenizer.php',
+        'HTML5_TreeBuilder' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/TreeBuilder.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -29,6 +69,7 @@ class ComposerStaticInit612e8382731b0caf052f0e75db9dc421
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit612e8382731b0caf052f0e75db9dc421::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit612e8382731b0caf052f0e75db9dc421::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit612e8382731b0caf052f0e75db9dc421::$prefixesPsr0;
             $loader->classMap = ComposerStaticInit612e8382731b0caf052f0e75db9dc421::$classMap;
 
         }, null, ClassLoader::class);

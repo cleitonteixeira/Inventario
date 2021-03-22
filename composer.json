@@ -3,5 +3,8 @@
         "psr-4": {
             "Model\\": "Model/"
         }
+    },
+    "require": {
+        "dompdf/dompdf": "^1.0"
     }
 }

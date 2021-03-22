@@ -37,7 +37,7 @@ define("BASE", filter_input(INPUT_SERVER, 'REQUEST_SCHEME').'://'.filter_input(I
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="NavLancamento" href="#">Equipamento</a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="<?=BASE;?>View/Equipamento/Listar.php">Listar</a>
-                                <a class="dropdown-item" href="<?=BASE;?>View/Solicitacao/Todas.php">Solicitação</a>
+                                <a class="dropdown-item" href="<?=BASE;?>View/Solicitacao/NovaSolicitacao.php">Solicitação</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">

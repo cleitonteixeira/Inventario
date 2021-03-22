@@ -78,10 +78,46 @@ class SolicitacaoDao {
 	$TableSolicitacao .= '<li class="page-item"><span class="page-link"><a href="#" onclick="listarSolicitacao('.$quantidade_pg.', '. $qnt_result_pg.')">Última</a></span></li></ul></nav>';
         return $TableSolicitacao;
     }
+    public function readTableProgress( $pagina,$qnt_result_pg) { $inicio = ($pagina * $qnt_result_pg) - $qnt_result_pg;
+        
+        $sql = "SELECT s.idSolicitacao, s.CodSolicitacao, s.Tipo, u.Nome AS Solicitante, un.Nome AS Unidade, e.Nome AS Equipamento, e.Sequencial, usue.Nome as Responsavel, s.dEnvio FROM solicitacao s INNER JOIN usuarios u ON u.idusuarios = s.Usuario_idUsuario INNER JOIN unidade un ON un.idUnidade = s.Unidade_idUnidade INNER JOIN equipamento e ON e.idEquipamento = s.Equipamento_idEquipamento INNER JOIN unidade une ON une.idUnidade = e.Unidade_idUnidade INNER JOIN usuarios usue ON usue.idusuarios = s.Estoque_idEstoque  WHERE s.Status = 'Andamento' LIMIT ?, ?";
+        
+        $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);$stmt->bindParam(1, $inicio, \PDO::PARAM_INT);$stmt->bindParam(2, $qnt_result_pg, \PDO::PARAM_INT);$stmt->execute();
+       
+        
+        $TableSolicitacao = '<table class="table table-hover table-bordered"><thead class="thead-light"><tr><th scope="col">ID</th><th scope="col">Equipamento</th><th scope="col">Destino</th><th scope="col">Data Envio</th><th scope="col">Solicitante</th><th scope="col">Responsável</th><th scope="col">Tipo</th><th scope="col">Detalhes</th></tr></thead><tbody>';
+        while($res = $stmt->fetch(\PDO::FETCH_OBJ)){
+            
+            $ctl = $this->geraCss($res->idSolicitacao);
+
+            $TableSolicitacao .= "<tr class='font-equipamento '><td class='".$ctl."'>". $res->CodSolicitacao ."</td><td >".$res->Sequencial." - ".utf8_decode($res->Equipamento)."</td><td >".utf8_decode($res->Unidade)."</td><td class='".$ctl."'>".date("d/m/Y", strtotime(utf8_decode($res->dEnvio)))."</td><td >".utf8_decode($res->Solicitante)."</td><td >".utf8_decode($res->Responsavel)."</td><td >".utf8_decode($res->Tipo)."</td><td><a class='btn btn-sm btn-outline-info' href='Detalhes.php?id=". $res->idSolicitacao ."'><i class='bi bi-folder'></i></a><a class='btn btn-sm btn-outline-info ml-1'><i class='bi bi-file-text'></i></a></td></tr>";
+        }
+        $TableSolicitacao .= '</tbody></table>';
+	
+        $sqlQ = "SELECT COUNT(idSolicitacao) AS num_result FROM solicitacao WHERE Status = 'Nova'";$stmtQ = \Model\Conexao\Conexao::getConexao()->prepare($sqlQ);$stmtQ->execute();$row_pg = $stmtQ->fetch(\PDO::FETCH_ASSOC);$quantidade_pg = ceil($row_pg['num_result'] / $qnt_result_pg); $max_links = 2;
+	
+        $TableSolicitacao .= '<nav aria-label="paginacao"><ul class="pagination"><li class="page-item"><span class="page-link"><a href="#" onclick="ListarEquipamentos(1, '.$qnt_result_pg.')">Primeira</a> </span></li>';
+	for ($pag_ant = $pagina - $max_links; $pag_ant <= $pagina - 1; $pag_ant++) {
+		if($pag_ant >= 1){
+			$TableSolicitacao .= "<li class='page-item'><a class='page-link' href='#' onclick='listarSolicitacao($pag_ant, $qnt_result_pg)'>$pag_ant </a></li>";
+		}
+	}
+	$TableSolicitacao .= '<li class="page-item active"><span class="page-link">'.$pagina.'</span></li>';
+	for ($pag_dep = $pagina + 1; $pag_dep <= $pagina + $max_links; $pag_dep++) { if($pag_dep <= $quantidade_pg){ $TableSolicitacao .= "<li class='page-item'><a class='page-link' href='#' onclick='listarSolicitacao($pag_dep, $qnt_result_pg)'>$pag_dep</a></li>"; } }$TableSolicitacao .= '<li class="page-item"><span class="page-link"><a href="#" onclick="listarSolicitacao('.$quantidade_pg.', '. $qnt_result_pg.')">Última</a></span></li></ul></nav>';
+        return $TableSolicitacao;
+    }
     
     public function readSolicitacao($IDSolicita) {
-        $sql = "SELECT s.idSolicitacao, s.CodSolicitacao, s.Tipo, e.Situacao, u.Nome AS Solicitante, un.Nome AS Unidade, e.Descricao, e.Nome AS Equipamento, e.Sequencial, ca.Nome AS Categoria, une.idUnidade, une.Regiao_idRegiao, une.Nome AS UnidadeAtual  FROM solicitacao s INNER JOIN usuarios u ON u.idusuarios = s.Usuario_idUsuario INNER JOIN unidade un ON un.idUnidade = s.Unidade_idUnidade INNER JOIN equipamento e ON e.idEquipamento = s.Equipamento_idEquipamento INNER JOIN unidade une ON une.idUnidade = e.Unidade_idUnidade INNER JOIN categoria ca ON ca.idCategoria = e.Categoria_idCategoria WHERE s.Status = 'Nova' AND s.idSolicitacao = ?";
-        
+        $x = $this->readNew($IDSolicita);
+        if( $x === "Nova" ){
+            
+            $sql = "SELECT s.idSolicitacao, s.dSolicitacao, s.Status, s.CodSolicitacao, s.Tipo, e.Situacao, u.Nome AS Solicitante, un.Nome AS Unidade, e.Descricao, e.Nome AS Equipamento, e.Sequencial, ca.Nome AS Categoria, une.idUnidade, une.Regiao_idRegiao, une.Nome AS UnidadeAtual FROM solicitacao s INNER JOIN usuarios u ON u.idusuarios = s.Usuario_idUsuario INNER JOIN unidade un ON un.idUnidade = s.Unidade_idUnidade INNER JOIN equipamento e ON e.idEquipamento = s.Equipamento_idEquipamento INNER JOIN unidade une ON une.idUnidade = e.Unidade_idUnidade INNER JOIN categoria ca ON ca.idCategoria = e.Categoria_idCategoria WHERE s.idSolicitacao = ?";
+
+        }else{
+            
+            $sql = "SELECT re.Nome AS Regiao, s.dEnvio, s.dAceite, s.idSolicitacao, s.dSolicitacao, s.Status, s.CodSolicitacao, s.Tipo, e.Situacao, u.Nome AS Solicitante, un.Nome AS Unidade, e.Descricao, e.Nome AS Equipamento, e.Sequencial, ca.Nome AS Categoria, une.idUnidade, une.Regiao_idRegiao, une.Nome AS UnidadeAtual FROM solicitacao s INNER JOIN usuarios u ON u.idusuarios = s.Usuario_idUsuario INNER JOIN unidade un ON un.idUnidade = s.Unidade_idUnidade INNER JOIN equipamento e ON e.idEquipamento = s.Equipamento_idEquipamento INNER JOIN unidade une ON une.idUnidade = e.Unidade_idUnidade INNER JOIN categoria ca ON ca.idCategoria = e.Categoria_idCategoria INNER JOIN regiao re ON re.idRegiao = une.Regiao_idRegiao WHERE s.idSolicitacao =?";
+
+        }
         $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
         $stmt->bindParam( 1, $IDSolicita );
         $stmt->execute();
@@ -90,24 +126,51 @@ class SolicitacaoDao {
         
     }
     
+    public function readNew($idSolicitacao){
+        $sql = "SELECT Status FROM solicitacao WHERE idSolicitacao = ? LIMIT 1;";
+        $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
+        $stmt->bindParam( 1, $idSolicitacao );
+        $stmt->execute();
+        $r = $stmt->fetch(\PDO::FETCH_OBJ);
+        return $r->Status;
+    }
+    
     public function update(SolicitacaoClass $Soli) {
         try{
             \Model\Conexao\Conexao::getConexao()->beginTransaction();
 
 
-            $sql = "UPTADE TABLE solicitacao SET Estoque_idEstoque = ?, dEnvio = ?, dAceite = ?, Status = 'Andamento' WHERE idSolicitacao = ?;";
+            $sql = "UPDATE solicitacao SET Estoque_idEstoque = ?, dEnvio = ?, dAceite = ?, Status = 'Andamento' WHERE idSolicitacao = ?;";
 
             $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
             $stmt->bindValue( 1, $Soli->getIdEstoque() );
             $stmt->bindValue( 2, $Soli->getDEnvio() );
             $stmt->bindValue( 3, $Soli->getDAceite() );
             $stmt->bindValue( 4, $Soli->getIdSolicitacao() );
-
+            $stmt->execute();
             \Model\Conexao\Conexao::getConexao()->commit();
             return true;
         } catch (PDOException $e){
             \Model\Conexao\Conexao::getConexao()->rollBack();
             return false;
+        }
+    }
+    
+    public function geraCss( $idSolicitacao ) {
+        $sql = "SELECT dEnvio FROM solicitacao WHERE idSolicitacao = ?;";
+        $stm = \Model\Conexao\Conexao::getConexao()->prepare($sql);
+        $stm->bindParam( 1, $idSolicitacao );
+        $stm->execute();
+        $res = $stm->fetch(\PDO::FETCH_OBJ);
+        $DataDespacho = strtotime( $res->dEnvio );
+        $diferenca = $DataDespacho - strtotime( date("Y-m-d") );
+        $dias = (int)floor( $diferenca / ( 60 * 60 * 24 ) );
+        if($dias > 7){
+            return "bg-success  text-white";
+        }elseif ($dias < 7 && $dias > 2) {
+            return "bg-warning  text-dark";
+        }else{
+            return "bg-danger  text-white";
         }
     }
     

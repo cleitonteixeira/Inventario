@@ -1,15 +1,15 @@
 <?php
 use Model\Solicitacao\SolicitacaoDao;
 
-if (!isset($_SESSION)) { session_start();}
+if (!isset($_SESSION)) { session_start(); }
 if(!isset($_SESSION['idUser'])){
     header("Location: ../../index.php");
 }else{
-    require_once '../../vendor/autoload.php';
-
-    require_once '../../View/Menu/Superior.php';
-    $Solicitacao = new SolicitacaoDao();
     
+    require_once '../../vendor/autoload.php';
+    require_once '../../View/Menu/Superior.php';
+
+    $Solicitacao = new SolicitacaoDao();    
     $dSolicitaca = $Solicitacao->readSolicitacao(filter_input(INPUT_GET, 'id'));
 ?>
         <!-- CONTEUDO SITE -->
@@ -37,7 +37,6 @@ if(!isset($_SESSION['idUser'])){
                                         </div>
                                     </div>
                                 </div>
-                                
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group mb-2">
@@ -71,7 +70,7 @@ if(!isset($_SESSION['idUser'])){
                                         <div class="form-group mb-2">
                                             <label for="mUnidade" class="col-form-label">Previsão de Envio:</label>
                                             <div class="input-group date">
-                                                <input type="text" class="form-control" id="lDate" name="lDate" required  data-error="Selecione uma data.">
+                                                <input type="text" class="form-control" id="lDate" name="lDate" required data-error="Selecione uma data." <?=$dSolicitaca->Status === 'Andamento' || $dSolicitaca->Status === 'Finalizada'  ? 'value="'.date("d/m/Y", strtotime($dSolicitaca->dEnvio)).'" readonly' : '' ?>>
                                                 <div class="input-group-addon">
                                                     <span class="glyphicon glyphicon-th"></span>
                                                 </div>
@@ -79,25 +78,26 @@ if(!isset($_SESSION['idUser'])){
                                             <div class="help-block with-errors"></div>
                                         </div>
                                     </div>
-                                    
                                 </div>
-                            
+                                <?php if( $dSolicitaca->Status == 'Andamento' || $dSolicitaca->Status == 'Finalizada' ){ ?>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group mb-2">
+                                            <p>Data programada por <strong><?=$dSolicitaca->Estoque?></strong> em <strong><?=date("d/m/Y", strtotime($dSolicitaca->dAceite))?></strong>.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } 
+                                if($dSolicitaca->Status === 'Nova'){ ?>
                                 <div class="row mt-3">
-
                                     <div class="col">
                                         <input type="hidden" name="Solicitacao" value="Aceite" />
                                         <input type="hidden" name="idSolicitacao" value="<?=$dSolicitaca->idSolicitacao;?>" />
                                         <button type="submit" class="btn btn-outline-success btn-block">Aceitar</button>
-
                                     </div>
-                                    <!--<div class="col">
-
-                                        <button class="btn btn-outline-danger btn-block">Recusar</button>
-
-                                    </div>-->
                                 </div>
+                                <?php } ?>
                             </form>
-
                         </div>
                     </div>
                 </div>

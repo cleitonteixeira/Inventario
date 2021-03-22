@@ -18,6 +18,7 @@ if(!isset($_SESSION['idUser'])){
         <div class="container">
             <!-- CONTEUDO SITE USUÁRIO -->
             <div class="row my-2">
+                
             </div>
         </div>
 <?php

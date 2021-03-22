@@ -19,7 +19,13 @@ if($Controle === 'Lista'){
     $qnt_result_pg = filter_input(INPUT_POST, 'qnt_result_pg', FILTER_SANITIZE_NUMBER_INT);
     echo $Solicita->readTableNew($pagina, $qnt_result_pg);
     
-}elseif ($Controle === 'Solicitacao') {
+}elseif($Controle === 'ListaAndamento'){
+    
+    $pagina = filter_input(INPUT_POST, 'pagina', FILTER_SANITIZE_NUMBER_INT);
+    $qnt_result_pg = filter_input(INPUT_POST, 'qnt_result_pg', FILTER_SANITIZE_NUMBER_INT);
+    echo $Solicita->readTableProgress($pagina, $qnt_result_pg);
+    
+}elseif ($Controle === 'Solicitacao') {    
     
     $Solicitacao->setIdEquipamento( filter_input( INPUT_POST, 'idEquipamento' ) );
     $Solicitacao->setIdUnidade( filter_input ( INPUT_POST, 'idUnidade') );

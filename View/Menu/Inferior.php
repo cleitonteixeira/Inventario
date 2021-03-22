@@ -13,10 +13,102 @@
                     startDate: '+1d',
                     todayBtn: "linked"
                 });
+               
             });
         </script>
         
-        <?php if(filter_input(INPUT_SERVER, 'SCRIPT_NAME') == '/Inventario/View/Solicitacao/Nova.php'){  ?>
+         <?php if(filter_input(INPUT_SERVER, 'SCRIPT_NAME') == '/Inventario/View/Solicitacao/NovaSolicitacao.php'){  ?>
+        <script>
+            function addREquipamento( Elemento, Equipamento ){
+                if( $(Elemento).is(":checked")){
+                    
+                }else{
+                    $(Elemento).closest('tr').remove();
+                    var str = $("#idEquipamentosList").val();
+                    $("#idEquipamentosList").val(str.replace(','+Equipamento, ''));
+                }
+            }
+            function addEquipamento( Elemento, idEquipamento ){
+                if( $(Elemento).is(":checked")){
+                    var dados = {
+                            idEquipamento: idEquipamento,
+                            Equipamento: 'AddEquipamento'
+                    };
+                    $.post('<?=BASE;?>Controle/Equipamentos.php', dados , function(retorna){
+                        $.each(JSON.parse(retorna), function(i, obj){
+                            var newRow = $('<tr id="'+ obj.Sequencial +'">');
+                            var cols = '<td>'+ obj.Sequencial +'</td><td>'+ obj.Equipamento +' </td><td>'+ obj.Categoria +'</td><td class="text-center"><input onclick="addREquipamento( addEquipamentoCheckL'+obj.idEquipamento+','+ obj.idEquipamento +')" checked type="checkbox" id="addEquipamentoCheckL'+obj.idEquipamento+'"></td>';
+                            newRow.append(cols);
+                            $("#tableSolicitacaoEquipamento").append(newRow);
+                        });
+                    });
+                    var temp = $("#idEquipamentosList").val();
+                    if(temp.length < 1){
+                        $("#idEquipamentosList").val(','+idEquipamento);
+                    }else{
+                        $("#idEquipamentosList").val(temp+','+idEquipamento);
+                    }
+                    $(Elemento).closest('tr').remove();
+                }else{
+                    $(Elemento).closest('tr').remove();
+                }
+            }
+            function listarEquipamento( ){
+                var Tipo = '';
+                if($("#tipoCheckBox1").is(':checked')){
+                    Tipo = $("#tipoCheckBox1").val();
+                }else{
+                    Tipo = $("#tipoCheckBox2").val();
+                }
+                var Unidade = $("#Unidade").val();
+                var ListEquipameto = $("#idEquipamentosList").val();
+                if(Unidade > 0){
+                    var dados = {
+                            ListEquipamento: ListEquipameto,
+                            Unidade: Unidade,
+                            Tipo: Tipo,
+                            Equipamento: 'ListarEquipamento'
+                    };
+                    $.post('<?=BASE;?>Controle/Equipamentos.php', dados , function(retorna){
+                        $("#table-equipamento").html('').show();
+                        $.each(JSON.parse(retorna), function(i, obj){
+
+                            var newRow = $("<tr>");
+                            var cols = '<td>'+ obj.Sequencial +'</td><td>'+ obj.Equipamento +'</td><td>'+ obj.Categoria +'</td><td class="text-center"><input onclick="addEquipamento( addEquipamentoCheck'+obj.idEquipamento+','+ obj.idEquipamento +')" type="checkbox" id="addEquipamentoCheck'+obj.idEquipamento+'"></td>';
+                            newRow.append(cols);
+                            $("#table-equipamento").append(newRow);
+                        });
+                        $('#selectEquipamentoModal').modal('show');
+                    });
+                }else{
+                    $("#selectEquipamentoModalError").modal('show');
+                        setTimeout(function() {
+                            $('#selectEquipamentoModalError').modal('hide');
+                    }, 3500);
+                }
+            }
+        </script>
+        <?php  } if(filter_input(INPUT_SERVER, 'SCRIPT_NAME') == '/Inventario/View/Solicitacao/Andamento.php'){  ?>
+        <script>
+            var qnt_result_pg = 9; //quantidade de registro por página
+            var pagina = 1; //página inicial
+            $(document).ready(function () {
+                    listarSolicitacao(pagina, qnt_result_pg); //Chamar a função para listar os registros
+            });
+            function listarSolicitacao(pagina, qnt_result_pg){
+                var dados = {
+                        pagina: pagina,
+                        qnt_result_pg: qnt_result_pg,
+                        Solicitacao: 'ListaAndamento'
+
+                };
+                $.post('<?=BASE;?>Controle/Solicitacao.php', dados , function(retorna){
+                        //Subtitui o valor no seletor id="conteudo"
+                        $("#TableSolicitacao").html(retorna);
+                });
+            }
+        </script>
+        <?php  } if(filter_input(INPUT_SERVER, 'SCRIPT_NAME') == '/Inventario/View/Solicitacao/Nova.php'){  ?>
         <script>
             var qnt_result_pg = 9; //quantidade de registro por página
             var pagina = 1; //página inicial

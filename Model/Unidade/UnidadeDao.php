@@ -5,7 +5,7 @@ class UnidadeDao {
     
     public function readList() {
         
-        $sql = 'SELECT u.idUnidade, u.Nome AS Unidade, us.Nome AS Responsavel FROM unidade u INNER JOIN usuarios us ON us.idusuarios = u.Usuario_idUsuario';
+        $sql = 'SELECT u.idUnidade, u.Nome AS Unidade, us.Nome AS Responsavel FROM unidade u INNER JOIN usuarios us ON us.idusuarios = u.Usuario_idUsuario ORDER BY u.Nome';
         
         $stm = \Model\Conexao\Conexao::getConexao()->prepare($sql);
         $stm->execute();

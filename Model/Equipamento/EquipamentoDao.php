@@ -52,7 +52,8 @@ class EquipamentoDao {
             return '';
         }
     }
-      public function read() {
+    
+    public function read() {
         
         $Equipamento = '';    
 
@@ -108,6 +109,7 @@ class EquipamentoDao {
 	$TableEquipamentos .= '<li class="page-item"><span class="page-link"><a href="#" onclick="ListarEquipamentos('.$quantidade_pg.', '. $qnt_result_pg.')">Última</a></span></li></ul></nav>';
         return $TableEquipamentos;
     }
+    
     public function readEDetalhes($idEquipamento) {
         $sql = "SELECT e.Nome AS Equipamento, e.idEquipamento, u.Nome AS Unidade, r.Nome AS Regiao, r.Codigo AS CodRegiao, e.Sequencial, u.Codigo AS CodUnidade, e.Descricao, us.Nome AS Responsavel, e.Situacao, ca.Nome AS Categoria FROM equipamento e INNER JOIN unidade u ON u.idUnidade = e.Unidade_idUnidade INNER JOIN regiao r ON r.idRegiao = u.Regiao_idRegiao INNER JOIN categoria ca ON ca.idCategoria = e.Categoria_idCategoria INNER JOIN usuarios us ON us.idusuarios = u.Usuario_idUsuario WHERE idEquipamento = ?";
         $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
@@ -130,4 +132,83 @@ class EquipamentoDao {
         array_push($Dados, $Valores);
         return $Dados;
     }
+    
+    public function readListEquipamento( $Tipo, $Unidade, $ListEquipamento) {
+        $dados = explode(",", $ListEquipamento);
+        
+        $totalInterrogacoes = count($dados);
+
+        $interrogacoes = str_repeat('?,', $totalInterrogacoes);
+        $interrogacoes = substr($interrogacoes, 0, -1);
+        if ( $Tipo === 'Solicitação' ) {
+            $sql = "SELECT e.idEquipamento, e.Nome AS Equipamento, e.Descricao, e.Sequencial, u.Regiao_idRegiao, e.Unidade_idUnidade, u.Nome AS Unidade, c.Nome AS Categoria FROM equipamento e INNER JOIN unidade u ON u.idUnidade = e.Unidade_idUnidade INNER JOIN categoria c ON c.idCategoria = e.Categoria_idCategoria WHERE u.Nome = 'CD' AND e.Situacao NOT IN ('Reservado', 'Locado', 'Baixado') AND e.idEquipamento NOT IN (".$interrogacoes.");";
+            $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
+            $stmt->execute($dados);
+            $Dados = array();
+            while( $res = $stmt->fetch(\PDO::FETCH_OBJ) ){
+                $LEquipamento = [
+                    "idEquipamento" => utf8_decode($res->idEquipamento),
+                    "Equipamento" => utf8_decode($res->Equipamento),
+                    "Categoria" => utf8_decode($res->Categoria),
+                    "Descricao" => utf8_decode($res->Descricao),
+                    "Sequencial" => utf8_decode($res->Sequencial),
+                    "Regiao_idRegiao" => utf8_decode($res->Regiao_idRegiao),
+                    "Unidade_idUnidade" => utf8_decode($res->Unidade_idUnidade),
+                    "Unidade" => utf8_decode($res->Unidade),
+                ];
+
+                array_push( $Dados, $LEquipamento);
+            }
+            return $Dados;  
+        } else {
+            $sql = "SELECT e.idEquipamento, e.Nome AS Equipamento, e.Descricao, e.Sequencial, u.Regiao_idRegiao, e.Unidade_idUnidade, u.Nome AS Unidade, c.Nome AS Categoria FROM equipamento e INNER JOIN unidade u ON u.idUnidade = e.Unidade_idUnidade INNER JOIN categoria c ON c.idCategoria = e.Categoria_idCategoria WHERE u.idUnidade = ? AND e.idEquipamento NOT IN (?);";
+            $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
+            $stmt->bindParam( 1, $Unidade );
+            $stmt->bindParam( 2, $ListEquipamento );
+            $stmt->execute();
+            $Dados = array();
+            while( $res = $stmt->fetch(\PDO::FETCH_OBJ) ){
+                $LEquipamento = [
+                    "idEquipamento" => utf8_decode($res->idEquipamento),
+                    "Equipamento" => utf8_decode($res->Equipamento),
+                    "Categoria" => utf8_decode($res->Categoria),
+                    "Descricao" => utf8_decode($res->Descricao),
+                    "Sequencial" => utf8_decode($res->Sequencial),
+                    "Regiao_idRegiao" => utf8_decode($res->Regiao_idRegiao),
+                    "Unidade_idUnidade" => utf8_decode($res->Unidade_idUnidade),
+                    "Unidade" => utf8_decode($res->Unidade),
+                ];
+
+                array_push( $Dados, $LEquipamento);
+            }
+            return $Dados;   
+        }
+    }
+    
+    
+    public function readListEquipamentoSingle( $idEquipamento ) {
+        $sql = "SELECT e.idEquipamento, e.Nome AS Equipamento, e.Descricao, e.Sequencial, u.Regiao_idRegiao, e.Unidade_idUnidade, u.Nome AS Unidade, c.Nome AS Categoria FROM equipamento e INNER JOIN unidade u ON u.idUnidade = e.Unidade_idUnidade INNER JOIN categoria c ON c.idCategoria = e.Categoria_idCategoria WHERE e.idEquipamento = ? LIMIT 1;";
+        $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
+        $stmt->bindParam( 1, $idEquipamento );
+        $stmt->execute();
+        $Dados = array();
+        while( $res = $stmt->fetch(\PDO::FETCH_OBJ) ){
+            $LEquipamento = [
+                "idEquipamento" => utf8_decode($res->idEquipamento),
+                "Equipamento" => utf8_decode($res->Equipamento),
+                "Categoria" => utf8_decode($res->Categoria),
+                "Descricao" => utf8_decode($res->Descricao),
+                "Sequencial" => utf8_decode($res->Sequencial),
+                "Regiao_idRegiao" => utf8_decode($res->Regiao_idRegiao),
+                "Unidade_idUnidade" => utf8_decode($res->Unidade_idUnidade),
+                "Unidade" => utf8_decode($res->Unidade),
+            ];
+
+            array_push( $Dados, $LEquipamento);
+        }
+        return $Dados;  
+
+    }
+    
+    
 }
