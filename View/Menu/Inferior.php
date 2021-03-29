@@ -16,7 +16,6 @@
                
             });
         </script>
-        
          <?php if(filter_input(INPUT_SERVER, 'SCRIPT_NAME') == '/Inventario/View/Solicitacao/NovaSolicitacao.php'){  ?>
         <script>
             function addREquipamento( Elemento, Equipamento ){
@@ -31,8 +30,8 @@
             function addEquipamento( Elemento, idEquipamento ){
                 if( $(Elemento).is(":checked")){
                     var dados = {
-                            idEquipamento: idEquipamento,
-                            Equipamento: 'AddEquipamento'
+                        idEquipamento: idEquipamento,
+                        Equipamento: 'AddEquipamento'
                     };
                     $.post('<?=BASE;?>Controle/Equipamentos.php', dados , function(retorna){
                         $.each(JSON.parse(retorna), function(i, obj){
@@ -64,10 +63,10 @@
                 var ListEquipameto = $("#idEquipamentosList").val();
                 if(Unidade > 0){
                     var dados = {
-                            ListEquipamento: ListEquipameto,
-                            Unidade: Unidade,
-                            Tipo: Tipo,
-                            Equipamento: 'ListarEquipamento'
+                        ListEquipamento: ListEquipameto,
+                        Unidade: Unidade,
+                        Tipo: Tipo,
+                        Equipamento: 'ListarEquipamento'
                     };
                     $.post('<?=BASE;?>Controle/Equipamentos.php', dados , function(retorna){
                         $("#table-equipamento").html('').show();
@@ -97,9 +96,9 @@
             });
             function listarSolicitacao(pagina, qnt_result_pg){
                 var dados = {
-                        pagina: pagina,
-                        qnt_result_pg: qnt_result_pg,
-                        Solicitacao: 'ListaAndamento'
+                    pagina: pagina,
+                    qnt_result_pg: qnt_result_pg,
+                    Solicitacao: 'ListaAndamento'
 
                 };
                 $.post('<?=BASE;?>Controle/Solicitacao.php', dados , function(retorna){
@@ -117,14 +116,13 @@
             });
             function listarSolicitacao(pagina, qnt_result_pg){
                 var dados = {
-                        pagina: pagina,
-                        qnt_result_pg: qnt_result_pg,
-                        Solicitacao: 'Lista'
-
+                    pagina: pagina,
+                    qnt_result_pg: qnt_result_pg,
+                    Solicitacao: 'Lista'
                 };
                 $.post('<?=BASE;?>Controle/Solicitacao.php', dados , function(retorna){
-                        //Subtitui o valor no seletor id="conteudo"
-                        $("#TableSolicitacao").html(retorna);
+                    //Subtitui o valor no seletor id="conteudo"
+                    $("#TableSolicitacao").html(retorna);
                 });
             }
         </script>
@@ -133,16 +131,16 @@
             var qnt_result_pg = 9; //quantidade de registro por página
             var pagina = 1; //página inicial
             $(document).ready(function () {
-                    listar_usuario(pagina, qnt_result_pg); //Chamar a função para listar os registros
+                listar_usuario(pagina, qnt_result_pg); //Chamar a função para listar os registros
             });
             function listar_usuario(pagina, qnt_result_pg){
                 var dados = {
-                        pagina: pagina,
-                        qnt_result_pg: qnt_result_pg
+                    pagina: pagina,
+                    qnt_result_pg: qnt_result_pg
                 };
                 $.post('<?=BASE;?>Controle/ListarClientes.php', dados , function(retorna){
-                        //Subtitui o valor no seletor id="conteudo"
-                        $("#TableClientes").html(retorna);
+                    //Subtitui o valor no seletor id="conteudo"
+                    $("#TableClientes").html(retorna);
                 });
             }
         </script>
@@ -153,17 +151,17 @@
             var qnt_result_pg = 20; //quantidade de registro por página
             var pagina = 1; //página inicial
             $(document).ready(function () {
-                    ListarEquipamentos(pagina, qnt_result_pg); //Chamar a função para listar os registros
+                ListarEquipamentos(pagina, qnt_result_pg); //Chamar a função para listar os registros
             });
             function ListarEquipamentos(pagina, qnt_result_pg){
                 var dados = {
-                        pagina: pagina,
-                        qnt_result_pg: qnt_result_pg,
-                        Equipamento: 'Lista'
+                    pagina: pagina,
+                    qnt_result_pg: qnt_result_pg,
+                    Equipamento: 'Lista'
                 };
                 $.post('<?=BASE;?>Controle/Equipamentos.php', dados , function(retorna){
-                        //Subtitui o valor no seletor id="conteudo"
-                        $("#TableEquipamentos").html(retorna);
+                    //Subtitui o valor no seletor id="conteudo"
+                    $("#TableEquipamentos").html(retorna);
                 });
             }
             function buscaEquipamento(idEquipamento){
@@ -196,7 +194,6 @@
                 });
                 $('#modalEquipamento').modal('show');
             }
-            
             $(document).ready(function(){
               $("#sCodigo").on("keyup", function() {
                 var value = $(this).val().toLowerCase();
@@ -271,7 +268,6 @@
                                 setTimeout(function() {
                                     $('#modalSolicitacao').modal('hide');
                             }, 5000);
-                            
                         });
                     });
                 }else{
@@ -285,5 +281,3 @@
         <?php } ?>
   </body>
 </html>
-
-

@@ -79,7 +79,8 @@ if(!isset($_SESSION['idUser'])){
                                 </div>
                                 <div class="form-row mt-4">
                                     <div class="col">
-                                        <input type="text" name="idEquipamentosList" id="idEquipamentosList" required />
+                                        <input type="hidden" name="idEquipamentosList" id="idEquipamentosList" required />
+                                        <input type="hidden" name="Solicitacao" id="Solicitacao" value="Nova" />
                                         <button class="btn btn-outline-success btn-block"><i class="bi bi-check2-square"></i> Salvar</button>
                                     </div>
                                 </div>
@@ -133,12 +134,11 @@ if(!isset($_SESSION['idUser'])){
                         <p>Selecione a Unidade primeiro depois clique em adicionar equipamentos.</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                     </div>
                 </div>
             </div>
         </div>
-        
 <?php
     require_once '../../View/Menu/Inferior.php';
 }

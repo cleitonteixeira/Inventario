@@ -42,7 +42,6 @@ class UnidadeDao {
 
         $sql = 'SELECT u.idUnidade, u.Nome AS Unidade, us.Nome AS Responsavel FROM unidade u INNER JOIN usuarios us ON us.idusuarios = u.Usuario_idUsuario';
 
-
         $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
         $stmt->execute();
         if($stmt->rowCount() > 0){

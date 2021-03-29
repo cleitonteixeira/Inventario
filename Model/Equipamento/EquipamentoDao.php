@@ -185,7 +185,6 @@ class EquipamentoDao {
         }
     }
     
-    
     public function readListEquipamentoSingle( $idEquipamento ) {
         $sql = "SELECT e.idEquipamento, e.Nome AS Equipamento, e.Descricao, e.Sequencial, u.Regiao_idRegiao, e.Unidade_idUnidade, u.Nome AS Unidade, c.Nome AS Categoria FROM equipamento e INNER JOIN unidade u ON u.idUnidade = e.Unidade_idUnidade INNER JOIN categoria c ON c.idCategoria = e.Categoria_idCategoria WHERE e.idEquipamento = ? LIMIT 1;";
         $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
@@ -206,9 +205,21 @@ class EquipamentoDao {
 
             array_push( $Dados, $LEquipamento);
         }
-        return $Dados;  
-
+        return $Dados;
     }
-    
-    
+    public function readRequest( $Request ){
+        $sql = "SELECT e.Sequencial, e.Nome AS Equipamento, e.Descricao, ca.Nome AS Categoria FROM itemsolicitacao ir INNER JOIN equipamento e ON e.idEquipamento = ir.Equipamento_idEquipamento INNER JOIN categoria ca ON ca.idCategoria = e.Categoria_idCategoria WHERE ir.Solicitacao_idSolicitacao = ?;";
+        $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
+        $stmt->bindParam( 1, $Request );
+        $stmt->execute();
+        $List = '';
+        while ($res = $stmt->fetch(\PDO::FETCH_OBJ)){
+            $List .= '<tr>';
+            $List .= '<td>'.utf8_decode($res->Sequencial).'</td>';
+            $List .= '<td>'.utf8_decode($res->Equipamento).'</td>';
+            $List .= '<td>'.utf8_decode($res->Categoria).'</td>';
+            $List .= '</tr>';
+        }
+        return $List;
+    }
 }

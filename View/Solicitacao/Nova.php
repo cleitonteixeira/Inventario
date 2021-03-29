@@ -1,8 +1,4 @@
 <?php
-use Model\Categoria\CategoriaDao;
-use Model\Unidade\UnidadeDao;
-use Model\Equipamento\EquipamentoDao;
-
 if (!isset($_SESSION)) { session_start();}
 if(!isset($_SESSION['idUser'])){
     header("Location: ../../index.php");
@@ -10,9 +6,6 @@ if(!isset($_SESSION['idUser'])){
     require_once '../../vendor/autoload.php';
 
     require_once '../../View/Menu/Superior.php';
-    $Categoria = new CategoriaDao();
-    $Unidade = new UnidadeDao();
-    $Equipamento = new EquipamentoDao();
 ?>
         <!-- CONTEUDO SITE -->
         <div class="container">

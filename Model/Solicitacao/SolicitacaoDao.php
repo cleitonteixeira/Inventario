@@ -11,24 +11,63 @@ class SolicitacaoDao {
         try{
             \Model\Conexao\Conexao::getConexao()->beginTransaction();
 
-            $sql = "INSERT INTO solicitacao (Equipamento_idEquipamento, Usuario_idUsuario, Unidade_idUnidade, dSolicitacao, Tipo) VALUES ( ?, ?, ?, ?, ? );";
+            $sql = "INSERT INTO solicitacao ( Usuario_idUsuario, Unidade_idUnidade, dSolicitacao, Tipo, CodSolicitacao ) VALUES ( ?, ?, ?, ?, ? );";
 
             $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
-            $stmt->bindValue( 1, $Solicitacao->getIdEquipamento() );
-            $stmt->bindValue( 2, $Solicitacao->getIdSolicitante() );
-            $stmt->bindValue( 3, $Solicitacao->getIdUnidade() );
-            $stmt->bindValue( 4, $Solicitacao->getDSolicitacao() );
-            $stmt->bindValue( 5, $Solicitacao->getTipo() ); 
+            $stmt->bindValue( 1, $Solicitacao->getIdSolicitante() );
+            $stmt->bindValue( 2, $Solicitacao->getIdUnidade() );
+            $stmt->bindValue( 3, $Solicitacao->getDSolicitacao() );
+            $stmt->bindValue( 4, $Solicitacao->getTipo() ); 
+            $stmt->bindValue( 5, $this->createCodSo($Solicitacao->getIdUnidade()) ); 
             $stmt->execute();
+            $RequestItem = new SolicitacaoClass();
+            $RequestItem->setIdItemSolicitacao($Solicitacao->getIdItemSolicitacao());
+            $RequestItem->setIdSolicitacao( \Model\Conexao\Conexao::getConexao()->lastInsertId() );
             
-            $this->updateStatus( $Solicitacao->getIdEquipamento(), 'Reservado' );
-            
-            \Model\Conexao\Conexao::getConexao()->commit();
-            return true;
+            if(!$this->createRequestItem($RequestItem)){
+                \Model\Conexao\Conexao::getConexao()->rollBack(); return false; exit;
+            }
+            \Model\Conexao\Conexao::getConexao()->commit(); return true;
+        } catch ( PDOException $ex ){
+            \Model\Conexao\Conexao::getConexao()->rollBack(); return false;
+        }
+    }
+    
+    public function createCodSo($Unidade){
+        try{
+            $sql = "SELECT COUNT(s.idSolicitacao) AS Cont, u.idUnidade, r.idRegiao FROM solicitacao s INNER JOIN unidade u ON u.idUnidade = s.Unidade_idUnidade INNER JOIN regiao r ON r.idRegiao = u.Regiao_idRegiao WHERE s.Unidade_idUnidade = ?;";
+            $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
+            $stmt->bindParam( 1, $Unidade );
+            $stmt->execute();
+            $R = $stmt->fetch(\PDO::FETCH_OBJ);
+            $Cont = $R->Cont+1;
+            return "SO.".$R->idRegiao.".".$R->idUnidade.".".date("y").str_pad($Cont, 4, 0, STR_PAD_LEFT) ;
         } catch (PDOException $ex){
-            \Model\Conexao\Conexao::getConexao()->rollBack();
             return false;
         }
+
+    }
+    
+    public function createRequestItem( SolicitacaoClass $Solicitacao ) {
+            try{
+                $sql = "INSERT INTO itemsolicitacao ( Solicitacao_idSolicitacao, Equipamento_idEquipamento ) VALUES ( ?, ? );";
+                
+                $LEquipamento = substr( $Solicitacao->getIdItemSolicitacao(), 1);
+                $LEquipamento = explode(",", $LEquipamento);
+                
+                $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
+            
+                foreach ($LEquipamento as $idEquipamento){
+                    $stmt->bindValue( 1, $Solicitacao->getIdSolicitacao() );
+                    $stmt->bindValue( 2, $idEquipamento );
+                    $stmt->execute();
+                    $this->updateStatus( $idEquipamento, 'Reservado' );
+                }
+                
+                return true;
+            } catch ( PDOException $ex ) {
+                return false;
+            }
     }
     
     public function updateStatus( $idEquipamento, $Situacao ) {
@@ -46,14 +85,14 @@ class SolicitacaoDao {
     }
     public function readTableNew( $pagina,$qnt_result_pg) {
         $inicio = ($pagina * $qnt_result_pg) - $qnt_result_pg;
-        $sql = "SELECT s.idSolicitacao, s.CodSolicitacao, s.Tipo, u.Nome AS Solicitante, un.Nome AS Unidade, e.Nome AS Equipamento, e.Sequencial, une.Nome AS UnidadeAtual  FROM solicitacao s INNER JOIN usuarios u ON u.idusuarios = s.Usuario_idUsuario INNER JOIN unidade un ON un.idUnidade = s.Unidade_idUnidade INNER JOIN equipamento e ON e.idEquipamento = s.Equipamento_idEquipamento INNER JOIN unidade une ON une.idUnidade = e.Unidade_idUnidade WHERE s.Status = 'Nova' LIMIT ?, ?";
+        $sql = "SELECT s.idSolicitacao, s.CodSolicitacao, s.Tipo, u.Nome AS Solicitante, un.Nome AS Unidade FROM solicitacao s INNER JOIN usuarios u ON u.idusuarios = s.Usuario_idUsuario INNER JOIN unidade un ON un.idUnidade = s.Unidade_idUnidade WHERE s.Status = 'Nova' LIMIT ?, ?";
         $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);
         $stmt->bindParam(1, $inicio, \PDO::PARAM_INT);
         $stmt->bindParam(2, $qnt_result_pg, \PDO::PARAM_INT); 
         $stmt->execute();
-        $TableSolicitacao = '<table class="table table-hover table-bordered"><thead class="thead-light"><tr><th scope="col">ID</th><th scope="col">Equipamento</th><th scope="col">Destino</th><th scope="col">Local Atual</th><th scope="col">Solicitante</th><th scope="col">Tipo</th><th scope="col">Detalhes</th></tr></thead><tbody>';
+        $TableSolicitacao = '<table class="table table-hover table-bordered"><thead class="thead-light"><tr><th scope="col">ID</th><th scope="col">Destino</th><th scope="col">Solicitante</th><th scope="col">Tipo</th><th scope="col">Detalhes</th></tr></thead><tbody>';
         while($res = $stmt->fetch(\PDO::FETCH_OBJ)){
-            $TableSolicitacao .= "<tr class='font-equipamento'><td >". $res->CodSolicitacao ."</td><td >".$res->Sequencial." - ".utf8_decode($res->Equipamento)."</td><td >".utf8_decode($res->Unidade)."</td><td >".utf8_decode($res->UnidadeAtual)."</td><td >".utf8_decode($res->Solicitante)."</td><td >".utf8_decode($res->Tipo)."</td><td><a class='btn btn-sm btn-outline-info' href='Detalhes.php?id=". $res->idSolicitacao ."'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-folder2-open' viewBox='0 0 16 16'><path d='M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v.64c.57.265.94.876.856 1.546l-.64 5.124A2.5 2.5 0 0 1 12.733 15H3.266a2.5 2.5 0 0 1-2.481-2.19l-.64-5.124A1.5 1.5 0 0 1 1 6.14V3.5zM2 6h12v-.5a.5.5 0 0 0-.5-.5H9c-.964 0-1.71-.629-2.174-1.154C6.374 3.334 5.82 3 5.264 3H2.5a.5.5 0 0 0-.5.5V6zm-.367 1a.5.5 0 0 0-.496.562l.64 5.124A1.5 1.5 0 0 0 3.266 14h9.468a1.5 1.5 0 0 0 1.489-1.314l.64-5.124A.5.5 0 0 0 14.367 7H1.633z'></path></svg></button></td></tr>";
+            $TableSolicitacao .= "<tr class='font-solicitacao'><td >". $res->CodSolicitacao ."</td><td >".utf8_decode($res->Unidade)."</td><td >".utf8_decode($res->Solicitante)."</td><td >".utf8_decode($res->Tipo)."</td><td><a class='btn btn-sm btn-outline-info' href='Detalhes.php?id=". $res->idSolicitacao ."'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-folder2-open' viewBox='0 0 16 16'><path d='M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v.64c.57.265.94.876.856 1.546l-.64 5.124A2.5 2.5 0 0 1 12.733 15H3.266a2.5 2.5 0 0 1-2.481-2.19l-.64-5.124A1.5 1.5 0 0 1 1 6.14V3.5zM2 6h12v-.5a.5.5 0 0 0-.5-.5H9c-.964 0-1.71-.629-2.174-1.154C6.374 3.334 5.82 3 5.264 3H2.5a.5.5 0 0 0-.5.5V6zm-.367 1a.5.5 0 0 0-.496.562l.64 5.124A1.5 1.5 0 0 0 3.266 14h9.468a1.5 1.5 0 0 0 1.489-1.314l.64-5.124A.5.5 0 0 0 14.367 7H1.633z'></path></svg></button></td></tr>";
         }
         $TableSolicitacao .= '</tbody></table>';
 	$sqlQ = "SELECT COUNT(idSolicitacao) AS num_result FROM solicitacao WHERE Status = 'Nova'";
@@ -80,17 +119,17 @@ class SolicitacaoDao {
     }
     public function readTableProgress( $pagina,$qnt_result_pg) { $inicio = ($pagina * $qnt_result_pg) - $qnt_result_pg;
         
-        $sql = "SELECT s.idSolicitacao, s.CodSolicitacao, s.Tipo, u.Nome AS Solicitante, un.Nome AS Unidade, e.Nome AS Equipamento, e.Sequencial, usue.Nome as Responsavel, s.dEnvio FROM solicitacao s INNER JOIN usuarios u ON u.idusuarios = s.Usuario_idUsuario INNER JOIN unidade un ON un.idUnidade = s.Unidade_idUnidade INNER JOIN equipamento e ON e.idEquipamento = s.Equipamento_idEquipamento INNER JOIN unidade une ON une.idUnidade = e.Unidade_idUnidade INNER JOIN usuarios usue ON usue.idusuarios = s.Estoque_idEstoque  WHERE s.Status = 'Andamento' LIMIT ?, ?";
+        $sql = "SELECT s.idSolicitacao, s.CodSolicitacao, s.Tipo, u.Nome AS Solicitante, un.Nome AS Unidade, usue.Nome as Responsavel, s.dEnvio FROM solicitacao s INNER JOIN usuarios u ON u.idusuarios = s.Usuario_idUsuario INNER JOIN unidade un ON un.idUnidade = s.Unidade_idUnidade INNER JOIN usuarios usue ON usue.idusuarios = s.Estoque_idEstoque  WHERE s.Status = 'Andamento' LIMIT ?, ?";
         
         $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);$stmt->bindParam(1, $inicio, \PDO::PARAM_INT);$stmt->bindParam(2, $qnt_result_pg, \PDO::PARAM_INT);$stmt->execute();
        
         
-        $TableSolicitacao = '<table class="table table-hover table-bordered"><thead class="thead-light"><tr><th scope="col">ID</th><th scope="col">Equipamento</th><th scope="col">Destino</th><th scope="col">Data Envio</th><th scope="col">Solicitante</th><th scope="col">Responsável</th><th scope="col">Tipo</th><th scope="col">Detalhes</th></tr></thead><tbody>';
+        $TableSolicitacao = '<table class="table table-hover table-bordered"><thead class="thead-light"><tr><th scope="col">ID</th><th scope="col">Destino</th><th scope="col">Data Envio</th><th scope="col">Solicitante</th><th scope="col">Responsável</th><th scope="col">Tipo</th><th scope="col">Detalhes</th></tr></thead><tbody>';
         while($res = $stmt->fetch(\PDO::FETCH_OBJ)){
             
             $ctl = $this->geraCss($res->idSolicitacao);
 
-            $TableSolicitacao .= "<tr class='font-equipamento '><td class='".$ctl."'>". $res->CodSolicitacao ."</td><td >".$res->Sequencial." - ".utf8_decode($res->Equipamento)."</td><td >".utf8_decode($res->Unidade)."</td><td class='".$ctl."'>".date("d/m/Y", strtotime(utf8_decode($res->dEnvio)))."</td><td >".utf8_decode($res->Solicitante)."</td><td >".utf8_decode($res->Responsavel)."</td><td >".utf8_decode($res->Tipo)."</td><td><a class='btn btn-sm btn-outline-info' href='Detalhes.php?id=". $res->idSolicitacao ."'><i class='bi bi-folder'></i></a><a class='btn btn-sm btn-outline-info ml-1'><i class='bi bi-file-text'></i></a></td></tr>";
+            $TableSolicitacao .= "<tr class='font-solicitacao '><td class='".$ctl."'>". $res->CodSolicitacao ."</td><td >".utf8_decode($res->Unidade)."</td><td class='".$ctl."'>".date("d/m/Y", strtotime(utf8_decode($res->dEnvio)))."</td><td >".utf8_decode($res->Solicitante)."</td><td >".utf8_decode($res->Responsavel)."</td><td >".utf8_decode($res->Tipo)."</td><td><a class='btn btn-sm btn-outline-info' href='Detalhes.php?id=". $res->idSolicitacao ."'><i class='bi bi-folder'></i></a><a class='btn btn-sm btn-outline-info ml-1'><i class='bi bi-file-text'></i></a></td></tr>";
         }
         $TableSolicitacao .= '</tbody></table>';
 	
@@ -107,15 +146,15 @@ class SolicitacaoDao {
         return $TableSolicitacao;
     }
     
-    public function readSolicitacao($IDSolicita) {
+    public function readSolicitacao( $IDSolicita ) {
         $x = $this->readNew($IDSolicita);
         if( $x === "Nova" ){
             
-            $sql = "SELECT s.idSolicitacao, s.dSolicitacao, s.Status, s.CodSolicitacao, s.Tipo, e.Situacao, u.Nome AS Solicitante, un.Nome AS Unidade, e.Descricao, e.Nome AS Equipamento, e.Sequencial, ca.Nome AS Categoria, une.idUnidade, une.Regiao_idRegiao, une.Nome AS UnidadeAtual FROM solicitacao s INNER JOIN usuarios u ON u.idusuarios = s.Usuario_idUsuario INNER JOIN unidade un ON un.idUnidade = s.Unidade_idUnidade INNER JOIN equipamento e ON e.idEquipamento = s.Equipamento_idEquipamento INNER JOIN unidade une ON une.idUnidade = e.Unidade_idUnidade INNER JOIN categoria ca ON ca.idCategoria = e.Categoria_idCategoria WHERE s.idSolicitacao = ?";
+            $sql = "SELECT s.idSolicitacao, s.dSolicitacao, s.Status, s.CodSolicitacao, s.Tipo, u.Nome AS Solicitante, un.Nome AS Unidade FROM solicitacao s INNER JOIN usuarios u ON u.idusuarios = s.Usuario_idUsuario INNER JOIN unidade un ON un.idUnidade = s.Unidade_idUnidade WHERE s.idSolicitacao = ?";
 
         }else{
             
-            $sql = "SELECT re.Nome AS Regiao, s.dEnvio, s.dAceite, s.idSolicitacao, s.dSolicitacao, s.Status, s.CodSolicitacao, s.Tipo, e.Situacao, u.Nome AS Solicitante, un.Nome AS Unidade, e.Descricao, e.Nome AS Equipamento, e.Sequencial, ca.Nome AS Categoria, une.idUnidade, une.Regiao_idRegiao, une.Nome AS UnidadeAtual FROM solicitacao s INNER JOIN usuarios u ON u.idusuarios = s.Usuario_idUsuario INNER JOIN unidade un ON un.idUnidade = s.Unidade_idUnidade INNER JOIN equipamento e ON e.idEquipamento = s.Equipamento_idEquipamento INNER JOIN unidade une ON une.idUnidade = e.Unidade_idUnidade INNER JOIN categoria ca ON ca.idCategoria = e.Categoria_idCategoria INNER JOIN regiao re ON re.idRegiao = une.Regiao_idRegiao WHERE s.idSolicitacao =?";
+            $sql = "SELECT re.Nome AS Regiao, s.dEnvio, s.dAceite, s.idSolicitacao, s.dSolicitacao, s.Status, s.CodSolicitacao, s.Tipo, u.Nome AS Solicitante, un.Nome AS Unidade FROM solicitacao s INNER JOIN usuarios u ON u.idusuarios = s.Usuario_idUsuario INNER JOIN unidade un ON un.idUnidade = s.Unidade_idUnidade WHERE s.idSolicitacao = ?";
 
         }
         $stmt = \Model\Conexao\Conexao::getConexao()->prepare($sql);

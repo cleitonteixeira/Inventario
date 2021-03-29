@@ -13,7 +13,6 @@ if($Controle === 'Lista'){
     $qnt_result_pg = filter_input(INPUT_POST, 'qnt_result_pg', FILTER_SANITIZE_NUMBER_INT);
     echo $Equipamento->readTableEquipamento($pagina, $qnt_result_pg);
 
-    
 }elseif ($Controle == 'Busca') {
     
     $idEquipamento = filter_input(INPUT_POST, 'idEquipamento', FILTER_SANITIZE_NUMBER_INT);
@@ -22,7 +21,6 @@ if($Controle === 'Lista'){
 }elseif($Controle === 'ListarEquipamento'){
     
     $Tipo = filter_input( INPUT_POST, 'Tipo', FILTER_SANITIZE_STRING );
-    
     
     $ListEquipamento = filter_input( INPUT_POST, 'ListEquipamento', FILTER_SANITIZE_STRING );
     

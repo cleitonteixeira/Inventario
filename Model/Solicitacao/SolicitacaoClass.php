@@ -2,9 +2,23 @@
 namespace Model\Solicitacao;
 
 class SolicitacaoClass {
-    private $idSolicitacao, $idEquipamento, $idSolicitante, $idEstoque, $idUnidade, $Unidade, $Sequencial, $dSolicitacao, $Tipo, $dEnvio, $dConclusao, $Equipamento, $Categoria, $Solicitante, $Estoque, $Regiao, $dAceite;
-    
-    function getDAceite() {
+    private $idSolicitacao, $idItemSolicitacao, $idEquipamento, $idSolicitante, $idEstoque, $idUnidade, $Unidade, $Sequencial, $dSolicitacao, $Tipo, $dEnvio, $dConclusao, $Equipamento, $Categoria, $Solicitante, $Estoque, $Regiao, $dAceite, $CSolicitacao;
+    function getIdItemSolicitacao() {
+        return $this->idItemSolicitacao;
+    }
+    function getCSolicitacao() {
+        return $this->CSolicitacao;
+    }
+
+    function setCSolicitacao($CSolicitacao): void {
+        $this->CSolicitacao = $CSolicitacao;
+    }
+
+        function setIdItemSolicitacao($idItemSolicitacao): void {
+        $this->idItemSolicitacao = $idItemSolicitacao;
+    }
+
+        function getDAceite() {
         return $this->dAceite;
     }
 

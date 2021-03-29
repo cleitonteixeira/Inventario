@@ -1,5 +1,6 @@
 <?php
 use Model\Solicitacao\SolicitacaoDao;
+use Model\Equipamento\EquipamentoDao;
 
 if (!isset($_SESSION)) { session_start(); }
 if(!isset($_SESSION['idUser'])){
@@ -10,6 +11,7 @@ if(!isset($_SESSION['idUser'])){
     require_once '../../View/Menu/Superior.php';
 
     $Solicitacao = new SolicitacaoDao();    
+    $Equipamento = new EquipamentoDao();    
     $dSolicitaca = $Solicitacao->readSolicitacao(filter_input(INPUT_GET, 'id'));
 ?>
         <!-- CONTEUDO SITE -->
@@ -24,51 +26,30 @@ if(!isset($_SESSION['idUser'])){
                         <div class="card-body">
                             <form method="post" action="Salvar.php" enctype="multipart/form-data" data-toggle="validator">
                                 <div class="row">
-                                    <div class="col">
-                                        <div class="form-group mb-2">
-                                            <label for="mSequencial" class="col-form-label">Sequencial:</label>
-                                            <input type="text" readonly class="form-control" id="mSequencial" value="<?=$dSolicitaca->Regiao_idRegiao.'.'.$dSolicitaca->idUnidade.'.'.$dSolicitaca->Sequencial;?>">
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-group mb-2">
-                                            <label for="mEquipamento" class="col-form-label">Equipamento:</label>
-                                            <input type="text" readonly class="form-control" id="mEquipamento" value="<?=utf8_decode($dSolicitaca->Equipamento);?>">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group mb-2">
-                                            <label for="mUnidade" class="col-form-label">Unidade Atual:</label>
-                                            <input type="text" readonly class="form-control" id="mUnidade" value="<?=utf8_decode($dSolicitaca->UnidadeAtual);?>">
-                                        </div>
-                                    </div>
+                                    
                                     <div class="col">
                                         <div class="form-group mb-2">
                                             <label for="mDestino" class="col-form-label">Unidade Destino:</label>
                                             <input type="text" readonly class="form-control" id="mDestino" value="<?=utf8_decode($dSolicitaca->Unidade);?>">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group mb-2">
-                                            <label for="mDescricao">Descrição:</label>
-                                            <textarea class="form-control" id="mDescricao" readonly ><?=utf8_decode($dSolicitaca->Descricao);?></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
                                     <div class="col">
                                         <div class="form-group mb-2">
                                             <label for="mSituacao" class="col-form-label">Requisição Tipo:</label>
                                             <input type="text" readonly class="form-control" id="mSituacao" value="<?=utf8_decode($dSolicitaca->Tipo);?>">
                                         </div>
                                     </div>
+                                </div>
+                                <div class="row">
                                     <div class="col">
                                         <div class="form-group mb-2">
-                                            <label for="mUnidade" class="col-form-label">Previsão de Envio:</label>
+                                            <label for="Solicitante" class="col-form-label">Solicitante:</label>
+                                            <input type="text" readonly class="form-control" id="Solicitante" value="<?=utf8_decode($dSolicitaca->Solicitante);?>">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group mb-2">
+                                            <label for="lDate" class="col-form-label">Previsão de Envio:</label>
                                             <div class="input-group date">
                                                 <input type="text" class="form-control" id="lDate" name="lDate" required data-error="Selecione uma data." <?=$dSolicitaca->Status === 'Andamento' || $dSolicitaca->Status === 'Finalizada'  ? 'value="'.date("d/m/Y", strtotime($dSolicitaca->dEnvio)).'" readonly' : '' ?>>
                                                 <div class="input-group-addon">
@@ -79,6 +60,27 @@ if(!isset($_SESSION['idUser'])){
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group mb-2 mt-2 border-top">
+                                            <p class="text-muted mt-3">Lista de Equipamentos:</p>
+                                            <table class="table table-striped table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Nome</th>
+                                                        <th>Categoria</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?=$Equipamento->readRequest( filter_input( INPUT_GET, 'id' ) );?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
                                 <?php if( $dSolicitaca->Status == 'Andamento' || $dSolicitaca->Status == 'Finalizada' ){ ?>
                                 <div class="row">
                                     <div class="col">
